@@ -1,0 +1,16 @@
+# Application (development side)
+Flask==3.1.0
+
+# Testing — web automation
+playwright==1.49.1
+pytest==8.3.4
+pytest-playwright==0.6.2
+pytest-html==4.1.1
+
+# Testing — mobile/device automation
+# Appium-Python-Client pins a compatible Selenium automatically; don't pin selenium
+# separately or the resolver conflicts.
+Appium-Python-Client==4.2.1
+
+# Quality / linting (used by CI + pre-commit)
+ruff==0.8.6

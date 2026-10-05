@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}{{ product.name }} — Mini Retail{% endblock %}
+{% block content %}
+  <div class="detail" data-testid="product-detail">
+    <h1 data-testid="detail-name">{{ product.name }}</h1>
+    <p class="card-category">{{ product.category }}</p>
+    <p class="card-price" data-testid="detail-price">${{ "%.2f"|format(product.price) }}</p>
+    <form action="{{ url_for('add_to_cart', product_id=product.id) }}" method="post">
+      <button type="submit" data-testid="add-to-cart">Add to cart</button>
+    </form>
+    <p><a href="{{ url_for('index') }}" data-testid="back-link">&larr; Back to products</a></p>
+  </div>
+{% endblock %}

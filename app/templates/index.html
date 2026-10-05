@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Mini Retail — Products{% endblock %}
+{% block content %}
+  <h1>{% if query %}Results for "{{ query }}"{% else %}All products{% endif %}</h1>
+
+  {% if not products %}
+    <p data-testid="no-results">No products found.</p>
+  {% else %}
+    <ul class="grid" data-testid="product-grid">
+      {% for p in products %}
+        <li class="card" data-testid="product-card" data-product-id="{{ p.id }}">
+          <a href="{{ url_for('product', product_id=p.id) }}"
+             class="card-name" data-testid="product-name">{{ p.name }}</a>
+          <div class="card-category">{{ p.category }}</div>
+          <div class="card-price" data-testid="product-price">${{ "%.2f"|format(p.price) }}</div>
+          <form action="{{ url_for('add_to_cart', product_id=p.id) }}" method="post">
+            <button type="submit" data-testid="add-to-cart">Add to cart</button>
+          </form>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endblock %}

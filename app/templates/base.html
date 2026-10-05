@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}Mini Retail{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <header class="topbar">
+    <a class="logo" href="{{ url_for('index') }}" data-testid="logo">🛒 Mini&nbsp;Retail</a>
+    <form class="search" action="{{ url_for('index') }}" method="get">
+      <input
+        type="text"
+        name="q"
+        placeholder="Search products"
+        value="{{ query|default('') }}"
+        data-testid="search-input"
+        aria-label="Search products"
+      />
+      <button type="submit" data-testid="search-button">Search</button>
+    </form>
+    <a class="cart-link" href="{{ url_for('view_cart') }}" data-testid="cart-link">
+      Cart (<span data-testid="cart-count">{{ cart_count }}</span>)
+    </a>
+  </header>
+
+  <main class="content">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer">
+    <small>Mini Retail — demo app under test. Not a real store.</small>
+  </footer>
+</body>
+</html>

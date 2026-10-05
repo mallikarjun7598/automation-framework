@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Checkout — Mini Retail{% endblock %}
+{% block content %}
+  <h1>Checkout</h1>
+
+  {% if error %}
+    <p class="error" data-testid="checkout-error">{{ error }}</p>
+  {% endif %}
+
+  <form action="{{ url_for('checkout') }}" method="post" class="checkout-form">
+    <label for="name">Full name</label>
+    <input type="text" id="name" name="name" data-testid="checkout-name" />
+    <button type="submit" data-testid="place-order">Place order</button>
+  </form>
+{% endblock %}

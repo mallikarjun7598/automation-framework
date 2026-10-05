@@ -1,0 +1,137 @@
+# GitHub Actions CI/CD pipeline for the automation framework.
+#
+# This is a real, valid workflow. As a "mock-up" it documents how the local
+# pipeline (ci/run-ci.sh) maps onto a hosted CI/CD system. It runs automatically
+# on pushes and pull requests if this repo is hosted on GitHub.
+#
+# Pipeline shape:
+#
+#   lint ──▶ web-tests ──┐
+#                        ├──▶ deploy (mock, main branch only)
+#        └─▶ mobile-tests┘
+#
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  PYTHON_VERSION: "3.12"
+
+jobs:
+  # ---------------------------------------------------------------- lint
+  lint:
+    name: Lint (ruff)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Run ruff
+        run: python -m ruff check app tests
+
+  # ----------------------------------------------------------- web tests
+  web-tests:
+    name: Web tests (Playwright)
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          python -m playwright install --with-deps chromium
+      - name: Run web suite
+        run: |
+          python -m pytest tests/web -m web --browser chromium \
+            --html=reports/web-report.html --self-contained-html
+      - name: Upload web report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-report
+          path: reports/web-report.html
+
+  # -------------------------------------------------------- mobile tests
+  # Mobile-web via Appium on an Android emulator. Android is used (not iOS)
+  # because GitHub-hosted Linux runners can run the Android emulator through
+  # KVM; iOS Simulators require macOS runners.
+  mobile-tests:
+    name: Mobile tests (Appium + Android emulator)
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Install Appium + UiAutomator2 driver
+        run: |
+          npm install -g appium
+          appium driver install uiautomator2
+      - name: Enable KVM (required by the Android emulator)
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' \
+            | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Start the app under test
+        run: |
+          PORT=5001 HOST=0.0.0.0 python -m app.server &
+          for i in $(seq 1 30); do
+            curl -fsS http://127.0.0.1:5001/health && break || sleep 1
+          done
+      - name: Run mobile suite on Android emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 30
+          arch: x86_64
+          profile: pixel_5
+          script: |
+            appium > appium.log 2>&1 &
+            sleep 5
+            BASE_URL=http://10.0.2.2:5001 MOBILE_PLATFORM=android \
+              python -m pytest tests/mobile -m mobile --appium --platform android \
+                --html=reports/mobile-report.html --self-contained-html
+      - name: Upload mobile report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile-report
+          path: reports/mobile-report.html
+
+  # --------------------------------------------------------- deploy (mock)
+  # Demonstrates the "CD" half: only runs on main, only after tests pass.
+  # Replace the echo with a real deploy (e.g. push a container, deploy to a
+  # host, or publish to a PaaS).
+  deploy:
+    name: Deploy (mock)
+    runs-on: ubuntu-latest
+    needs: [web-tests, mobile-tests]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Mock deployment
+        run: |
+          echo "All tests passed on main."
+          echo "Deploying mini-retail storefront... (mock step)"
+          echo "In a real pipeline this would build + ship the app."

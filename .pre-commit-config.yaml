@@ -1,0 +1,26 @@
+# Pre-commit hooks — run quick checks before each commit so problems are caught
+# locally instead of in CI.
+#
+# Setup (one time):
+#   .venv/bin/pip install pre-commit
+#   .venv/bin/pre-commit install
+#
+# After that, `git commit` automatically runs these hooks on changed files.
+# Run manually against everything with:  .venv/bin/pre-commit run --all-files
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.8.6
+    hooks:
+      # Lint and auto-fix.
+      - id: ruff
+        args: [--fix]
+      # Format (ruff's formatter, Black-compatible).
+      - id: ruff-format
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
