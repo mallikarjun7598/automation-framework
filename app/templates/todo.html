@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#1f3b57" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <title>To-Do</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='apps.css') }}" />
+</head>
+<body>
+  <main class="container">
+    <header class="app-header">
+      <a class="back" href="{{ url_for('apps_home') }}" data-testid="back">&larr;</a>
+      <h1>To-Do</h1>
+    </header>
+
+    <form id="todo-form" class="row-form" data-testid="todo-form">
+      <input
+        type="text"
+        id="todo-input"
+        placeholder="What needs doing?"
+        autocomplete="off"
+        data-testid="todo-input"
+        aria-label="New task"
+      />
+      <button type="submit" data-testid="todo-add">Add</button>
+    </form>
+
+    <p id="todo-summary" class="summary" data-testid="todo-summary"></p>
+
+    <ul id="todo-list" class="list" data-testid="todo-list"></ul>
+
+    <p id="todo-empty" class="empty" data-testid="todo-empty">No tasks yet. Add one above.</p>
+  </main>
+
+  <script src="{{ url_for('static', filename='pwa.js') }}"></script>
+  <script src="{{ url_for('static', filename='todo.js') }}"></script>
+</body>
+</html>

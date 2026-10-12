@@ -1,0 +1,173 @@
+/* Shared styles for the installable apps (To-Do, Expense Tracker).
+   Mobile-first and responsive: it looks right on a phone and scales up. */
+:root {
+  --navy: #1f3b57;
+  --navy-dark: #15293d;
+  --bg: #f4f6f8;
+  --card: #ffffff;
+  --border: #e2e6ea;
+  --text: #1a1a1a;
+  --muted: #6b7280;
+  --danger: #b12704;
+  --accent: #ffd814;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 16px 16px 48px;
+}
+
+/* --- headers --- */
+.app-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 0 20px;
+}
+.app-header h1 { font-size: 22px; margin: 0; }
+.back {
+  text-decoration: none;
+  color: var(--navy);
+  font-size: 24px;
+  line-height: 1;
+  padding: 4px 8px;
+  border-radius: 8px;
+}
+.back:hover { background: #e9edf1; }
+
+h1 { color: var(--navy); }
+
+/* --- apps hub --- */
+.apps-hub .container { padding-top: 32px; }
+.apps-hub h1 { font-size: 28px; margin-bottom: 4px; }
+.subtitle { color: var(--muted); margin-top: 0; }
+.app-tiles {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+  margin-top: 20px;
+}
+@media (min-width: 480px) {
+  .app-tiles { grid-template-columns: 1fr 1fr; }
+}
+.tile {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 20px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  text-decoration: none;
+  color: var(--text);
+  transition: transform 0.08s ease, box-shadow 0.08s ease;
+}
+.tile:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,0.08); }
+.tile-icon {
+  width: 44px; height: 44px;
+  display: grid; place-items: center;
+  background: var(--navy); color: #fff;
+  border-radius: 12px; font-size: 22px; font-weight: 700;
+}
+.tile-name { font-weight: 700; font-size: 17px; }
+.tile-desc { color: var(--muted); font-size: 13px; }
+
+/* --- forms --- */
+.row-form { display: flex; gap: 8px; }
+.row-form input { flex: 1; }
+.stack-form { display: flex; flex-direction: column; gap: 8px; }
+.stack-form .row { display: flex; gap: 8px; }
+.stack-form .row input { flex: 1; }
+
+input[type="text"], input[type="number"] {
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 16px; /* 16px avoids iOS zoom-on-focus */
+  width: 100%;
+  background: #fff;
+}
+input:focus { outline: 2px solid var(--navy); border-color: var(--navy); }
+
+button {
+  padding: 12px 18px;
+  border: none;
+  border-radius: 10px;
+  background: var(--navy);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+button:hover { background: var(--navy-dark); }
+
+/* --- lists --- */
+.list { list-style: none; padding: 0; margin: 16px 0 0; }
+.list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 14px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 8px;
+}
+.item-main {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+  cursor: pointer;
+}
+.item-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.item-amount { font-weight: 700; margin-left: auto; }
+.list-item.done .item-text { text-decoration: line-through; color: var(--muted); }
+input[type="checkbox"] { width: 20px; height: 20px; flex: none; }
+
+.icon-btn {
+  background: transparent;
+  color: var(--muted);
+  padding: 6px 10px;
+  font-size: 16px;
+  border-radius: 8px;
+}
+.icon-btn:hover { background: #f0e4e2; color: var(--danger); }
+
+/* --- total card (expenses) --- */
+.total-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 18px 20px;
+  background: var(--navy);
+  color: #fff;
+  border-radius: 14px;
+  margin-bottom: 18px;
+}
+.total-label { font-size: 13px; opacity: 0.85; }
+.total-amount { font-size: 30px; font-weight: 800; }
+
+/* --- misc --- */
+.summary { color: var(--muted); font-size: 14px; margin: 4px 2px 0; }
+.empty { color: var(--muted); text-align: center; margin-top: 28px; }
+.error { color: var(--danger); font-size: 14px; margin: 2px; }

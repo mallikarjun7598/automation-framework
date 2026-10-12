@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#1f3b57" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <title>My Apps</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='apps.css') }}" />
+</head>
+<body class="apps-hub">
+  <main class="container">
+    <h1>My Apps</h1>
+    <p class="subtitle">Installable web apps — add them to your home screen.</p>
+    <div class="app-tiles">
+      <a class="tile" href="{{ url_for('todo_app') }}" data-testid="open-todo">
+        <span class="tile-icon">✓</span>
+        <span class="tile-name">To-Do</span>
+        <span class="tile-desc">Track tasks, check them off</span>
+      </a>
+      <a class="tile" href="{{ url_for('expenses_app') }}" data-testid="open-expenses">
+        <span class="tile-icon">₹</span>
+        <span class="tile-name">Expense Tracker</span>
+        <span class="tile-desc">Log spending, see totals</span>
+      </a>
+    </div>
+  </main>
+  <script src="{{ url_for('static', filename='pwa.js') }}"></script>
+</body>
+</html>

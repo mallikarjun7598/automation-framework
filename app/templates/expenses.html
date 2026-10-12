@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#1f3b57" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <title>Expense Tracker</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='apps.css') }}" />
+</head>
+<body>
+  <main class="container">
+    <header class="app-header">
+      <a class="back" href="{{ url_for('apps_home') }}" data-testid="back">&larr;</a>
+      <h1>Expense Tracker</h1>
+    </header>
+
+    <div class="total-card" data-testid="expense-total-card">
+      <span class="total-label">Total spent</span>
+      <span class="total-amount" id="expense-total" data-testid="expense-total">$0.00</span>
+    </div>
+
+    <form id="expense-form" class="stack-form" data-testid="expense-form">
+      <input
+        type="text"
+        id="expense-desc"
+        placeholder="Description (e.g. Groceries)"
+        autocomplete="off"
+        data-testid="expense-desc"
+        aria-label="Expense description"
+      />
+      <div class="row">
+        <input
+          type="number"
+          id="expense-amount"
+          placeholder="Amount"
+          step="0.01"
+          min="0"
+          inputmode="decimal"
+          data-testid="expense-amount"
+          aria-label="Expense amount"
+        />
+        <button type="submit" data-testid="expense-add">Add</button>
+      </div>
+      <p class="error" id="expense-error" data-testid="expense-error" style="display:none"></p>
+    </form>
+
+    <ul id="expense-list" class="list" data-testid="expense-list"></ul>
+
+    <p id="expense-empty" class="empty" data-testid="expense-empty">No expenses yet. Add one above.</p>
+  </main>
+
+  <script src="{{ url_for('static', filename='pwa.js') }}"></script>
+  <script src="{{ url_for('static', filename='expenses.js') }}"></script>
+</body>
+</html>

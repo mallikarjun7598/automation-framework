@@ -25,20 +25,78 @@ HTML), so you can see how one app is validated across two very different drivers
 
 ---
 
+## Installable apps: To-Do & Expense Tracker
+
+Alongside the storefront, the project ships two small, **responsive, installable
+PWAs** at `/apps`:
+
+| App | Route | What it does |
+|-----|-------|---------------|
+| **To-Do** | `/apps/todo` | Add tasks, check them off, delete them, running "N of M remaining" summary |
+| **Expense Tracker** | `/apps/expenses` | Log expenses with a description + amount, see a running total, delete entries |
+
+Both apps:
+- Persist data in the browser via **`localStorage`** — no database needed.
+- Are **mobile-first and responsive** (one column on phones, wider layout on
+  desktop; inputs sized to avoid iOS zoom-on-focus).
+- Are **installable PWAs**: a `manifest.webmanifest` + `service-worker.js`
+  make them installable to a phone's home screen and usable offline after
+  the first visit.
+
+### Try it on your phone
+
+1. Start the app so it's reachable from your phone (same Wi-Fi network):
+   ```bash
+   HOST=0.0.0.0 make app
+   ```
+2. Find your computer's local IP (macOS: `ipconfig getifaddr en0`).
+3. On your phone's browser, visit `http://<that-ip>:5001/apps`.
+4. Use the browser's **"Add to Home Screen"** (Safari) or **install icon**
+   (Chrome) — it installs like a native app, works offline, and launches
+   full-screen.
+
+### Regenerating the icons
+
+Icons are plain PNGs generated with the Python standard library only (no
+Pillow/image dependency):
+```bash
+.venv/bin/python scripts/make_icons.py
+```
+
+
+---
+
 ## Project structure
 
 ```
 automation-framework/
-├── app/                        # ── DEVELOPMENT: the app under test ──
+├── app/                        # ── DEVELOPMENT: the apps under test ──
 │   ├── server.py               #    Flask app factory + routes
 │   ├── templates/              #    HTML pages (with data-testid hooks)
-│   └── static/style.css
+│   │   ├── index.html, product.html, cart.html, checkout.html   # storefront
+│   │   ├── apps_home.html      #    hub linking to the PWA apps below
+│   │   ├── todo.html           #    To-Do app
+│   │   └── expenses.html       #    Expense Tracker app
+│   └── static/
+│       ├── style.css             #    storefront styles
+│       ├── apps.css              #    shared responsive styles for the PWA apps
+│       ├── todo.js               #    To-Do app logic (localStorage)
+│       ├── expenses.js           #    Expense Tracker logic (localStorage)
+│       ├── pwa.js                #    registers the service worker
+│       ├── service-worker.js     #    offline cache-first strategy
+│       ├── manifest.webmanifest  #    installability metadata
+│       └── icons/                #    PWA home-screen icons (192 / 512)
+│
+├── scripts/make_icons.py       #    generates the PWA icons (no image lib needed)
 │
 ├── tests/                      # ── TESTING ──
 │   ├── web/                    #    Playwright suite
 │   │   ├── conftest.py         #    auto-starts the app, provides base_url
-│   │   ├── pages/              #    Page Objects (base, home, cart, checkout)
-│   │   └── test_shopping_web.py
+│   │   ├── pages/              #    Page Objects (base, home, cart, checkout,
+│   │   │                       #    todo, expenses)
+│   │   ├── test_shopping_web.py
+│   │   ├── test_todo_web.py
+│   │   └── test_expenses_web.py
 │   └── mobile/                 #    Appium suite (mobile-web)
 │       ├── conftest.py         #    Appium driver fixture (skips w/o device)
 │       ├── pages/              #    Mobile Page Objects

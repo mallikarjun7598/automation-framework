@@ -107,6 +107,39 @@ def create_app() -> Flask:
             return render_template("confirmation.html", order_id=order_id, name=name)
         return render_template("checkout.html", error=None)
 
+    # ---------------------------------------------------------------- apps hub
+    @app.route("/apps")
+    def apps_home():
+        """Simple hub linking to the standalone PWA apps."""
+        return render_template("apps_home.html")
+
+    @app.route("/apps/todo")
+    def todo_app():
+        """To-Do app. Data persists client-side via localStorage."""
+        return render_template("todo.html")
+
+    @app.route("/apps/expenses")
+    def expenses_app():
+        """Expense Tracker. Data persists client-side via localStorage."""
+        return render_template("expenses.html")
+
+    # ------------------------------------------------------- PWA plumbing
+    @app.route("/manifest.webmanifest")
+    def manifest():
+        """Web App Manifest — makes the apps installable on mobile/desktop."""
+        return app.send_static_file("manifest.webmanifest")
+
+    @app.route("/service-worker.js")
+    def service_worker():
+        """Service worker — enables offline support and install prompts.
+
+        Served from the root scope so it can control the whole origin.
+        """
+        resp = app.make_response(app.send_static_file("service-worker.js"))
+        resp.headers["Content-Type"] = "application/javascript"
+        resp.headers["Service-Worker-Allowed"] = "/"
+        return resp
+
     @app.route("/health")
     def health():
         """Lightweight endpoint CI uses to confirm the app is up."""
